@@ -51,6 +51,16 @@ git clone https://github.com/cms-ttbarAC/Analysis.git   # you need to manually f
 git clone --recurse-submodules https://github.com/cms-ttbarAC/Analysis.git
 ```
 
+Once everything is checked out, compile!  
+```
+scram b -j8
+```
+
+To set the environment anytime you open a new session:  
+```shell
+source setup.csh   # ALWAYS DO THIS FIRST! (initializes everything)
+```
+
 # Questions and Comments
 
 Please submit an issue or a PR.

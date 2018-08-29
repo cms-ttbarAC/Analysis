@@ -230,7 +230,6 @@ Event::Event( TTreeReader &myReader, configuration &cmaConfig ) :
     m_truthMatchingTool->initialize();
 
     // DNN material
-    m_deepLearningTool = new deepLearning(cmaConfig);
     if (!m_getDNN && m_useDNN)
         m_dnn_score = new TTreeReaderValue<float>(m_ttree,"ljet_CWoLa");
 
@@ -1062,17 +1061,6 @@ std::vector<int> Event::btag_jets(const std::string &wkpt) const{
 
 void Event::deepLearningPrediction(){
     /* Deep learning for large-R jets -- CWoLa */
-    if (m_DNNinference){
-        cma::DEBUG("EVENT : Calculate DNN ");
-        m_deepLearningTool->inference(m_ljets);     // decorate the ljet with DNN values
-    }
-    else if (m_DNNtraining){
-        for (auto& ljet : m_ljets){
-            m_deepLearningTool->training(ljet);
-            ljet.features = m_deepLearningTool->features();  // store the features on the ljet to make easily accessible later
-        }
-    }
-
     return;
 }
 

@@ -9,7 +9,7 @@ Texas A&M University
 
 Write data to flat ntuple
 */
-#include "ttbarAC_skim/ttbarAC_skim/interface/EventSaverFlatNtuple.h"
+#include "Analysis/Genesis/interface/EventSaverFlatNtuple.h"
 
 using namespace edm;
 

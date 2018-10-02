@@ -12,9 +12,10 @@ There are two main directories:
     - This is the local analysis framework that processes 
       flat ntuples and produces TTrees/histograms/efficiencies/etc.
 
-Additionally, [submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) 
-for [hepPlotter](https://github.com/demarley/hepPlotter) 
-and [cheetah](https://github.com/cms-ttbarAC/cheetah) 
+Additionally, [submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) for 
+[hepPlotter](https://github.com/demarley/hepPlotter),
+[asimov](https://github.com/demarley/asimov), and 
+[cheetah](https://github.com/cms-ttbarAC/cheetah) 
 are also included in this project.
 
 ## Getting Started
@@ -46,7 +47,7 @@ git clone https://github.com/demarley/lwtnn.git -b CMSSW_8_0_X-compatible lwtnn/
 
 ## This framework 
 #  without the submodules:
-git clone https://github.com/cms-ttbarAC/Analysis.git   # you need to manually fetch hepPlotter & cheetah
+git clone https://github.com/cms-ttbarAC/Analysis.git   # you need to manually fetch hepPlotter, asimov, & cheetah
 
 # with the submodules:
 git clone --recurse-submodules https://github.com/cms-ttbarAC/Analysis.git

@@ -4,3 +4,6 @@
 [submodule "cheetah"]
 	path = cheetah
 	url = https://github.com/cms-ttbarAC/cheetah.git
+[submodule "asimov"]
+	path = asimov
+	url = https://github.com/demarley/asimov.git

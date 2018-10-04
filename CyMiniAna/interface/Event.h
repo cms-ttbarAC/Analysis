@@ -32,6 +32,7 @@
 #include "Analysis/CyMiniAna/interface/truthMatching.h"
 #include "Analysis/CyMiniAna/interface/ttbarReco.h"
 #include "Analysis/CyMiniAna/interface/neutrinoReco.h"
+#include "Analysis/CyMiniAna/interface/deepLearning.h"
 
 
 // Event Class
@@ -48,12 +49,12 @@ class Event {
     bool isValidRecoEntry() const {return (m_entry > (long long)-1);}
 
     // Execute the event (load information and setup objects)
-    virtual void execute(Long64_t entry);
-    virtual void updateEntry(Long64_t entry);
+    void execute(Long64_t entry);
+    void updateEntry(Long64_t entry);
 
     // Clear stuff;
-    virtual void finalize();
-    virtual void clear();
+    void finalize();
+    void clear();
 
     // Setup physics information
     void initialize_leptons();
@@ -75,14 +76,14 @@ class Event {
     std::vector<Ljet> ljets() const {return m_ljets;}
     std::vector<Jet> jets() const {return m_jets;}
 
-    virtual MET met() const {return m_met;}
-    virtual float HT() const {return m_HT;}
-    virtual float ST() const {return m_ST;}
+    MET met() const {return m_met;}
+    float HT() const {return m_HT;}
+    float ST() const {return m_ST;}
 
     void ttbarReconstruction();
-    virtual void getBtaggedJets( Jet& jet );
-    virtual std::vector<int> btag_jets(const std::string &wkpt) const;
-    virtual std::vector<int> btag_jets() const {return m_btag_jets_default;} // using configured b-tag WP
+    void getBtaggedJets( Jet& jet );
+    std::vector<int> btag_jets(const std::string &wkpt) const;
+    std::vector<int> btag_jets() const {return m_btag_jets_default;} // using configured b-tag WP
 
     // Get truth physics information 
     std::vector<TruthTop> truth() {return m_truth_tops;}
@@ -95,15 +96,15 @@ class Event {
     std::vector<Jet>  truth_jets() const {return m_truth_jets;}
 
     // Get metadata info
-    virtual unsigned long long eventNumber() {return **m_eventNumber;}
+    unsigned long long eventNumber() {return **m_eventNumber;}
     long long entry() const { return m_entry; }
-//    virtual unsigned int eventNumber() const {return **m_eventNumber;}
-    virtual unsigned int runNumber() const {return **m_runNumber;}
-    virtual unsigned int lumiblock() const {return **m_lumiblock;}
-    virtual std::string treeName() const {return m_treeName;}
-    virtual float xsection() const {return m_xsection;}
-    virtual float kfactor() const {return m_kfactor;}
-    virtual float sumOfWeights() const {return m_sumOfWeights;}
+//    unsigned int eventNumber() const {return **m_eventNumber;}
+    unsigned int runNumber() const {return **m_runNumber;}
+    unsigned int lumiblock() const {return **m_lumiblock;}
+    std::string treeName() const {return m_treeName;}
+    float xsection() const {return m_xsection;}
+    float kfactor() const {return m_kfactor;}
+    float sumOfWeights() const {return m_sumOfWeights;}
 
     std::map<std::string,unsigned int> filters() const {return m_filters;}
     std::map<std::string,unsigned int> triggers() const {return m_triggers;}
@@ -116,19 +117,19 @@ class Event {
     void deepLearningPrediction();
 
     // MC info & weights
-    virtual float nominal_weight() const {return m_nominal_weight;}
+    float nominal_weight() const {return m_nominal_weight;}
     float weight_mc();
     float weight_jvt();
     float weight_pileup();
     float weight_lept_eff();
     float weight_btag();
     float weight_btag(const std::string &wkpt);
-    virtual double getSystEventWeight(const std::string &syst, const int weightIndex=-1);
+    double getSystEventWeight(const std::string &syst, const int weightIndex=-1);
 
     // Get weight systematics
-    virtual std::map<std::string,float > weightSystematicsFloats();
-    virtual std::map<std::string,std::vector<float> > weightSystematicsVectorFloats();
-    virtual std::vector<std::string> listOfWeightSystematics();
+    std::map<std::string,float > weightSystematicsFloats();
+    std::map<std::string,std::vector<float> > weightSystematicsVectorFloats();
+    std::vector<std::string> listOfWeightSystematics() {return m_listOfWeightSystematics;}
 
   protected:
 
@@ -163,6 +164,7 @@ class Event {
 
     // External tools
     ttbarReco* m_ttbarRecoTool;            // tool to perform ttbar reconstruction
+    deepLearning* m_cheetahTool;           // tool to perform deep learning on AK8 jets
     truthMatching* m_truthMatchingTool;    // tool to perform truth-matching
     neutrinoReco* m_neutrinoRecoTool;      // tool to perform neutrino reconsutrction
 

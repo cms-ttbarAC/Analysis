@@ -72,14 +72,6 @@ class eventSelection{
 
   protected:
 
-    // struct for holding information on a 'cut'
-    //  ideally this could be extended so that cuts are parsed & written by code, not humans!
-    struct Cut{
-        std::string name;       // name of cut
-        std::string comparison; // sign of cut (<,<=,>,>=,==,!=)
-        float value;            // float value -- cast to int if needed
-    };
-
     configuration* m_config;
 
     // cut information

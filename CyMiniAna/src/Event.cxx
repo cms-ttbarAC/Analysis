@@ -230,8 +230,9 @@ Event::Event( TTreeReader &myReader, configuration &cmaConfig ) :
     m_truthMatchingTool->initialize();
 
     // DNN material
+    m_cheetahTool = new deepLearning(cmaConfig);
     if (!m_getDNN && m_useDNN)
-        m_dnn_score = new TTreeReaderValue<float>(m_ttree,"ljet_CWoLa");
+        m_dnn_score = new TTreeReaderValue<float>(m_ttree,"ljet_CWoLa");  // access from tree if it exists
 
 
     // Kinematic reconstruction algorithms
@@ -754,7 +755,8 @@ void Event::initialize_ljets(){
         idx++;
     }
 
-    deepLearningPrediction();   // store features in map (easily access later)
+    if (m_DNNinference)
+        deepLearningPrediction();   // store features in map (easily access later)
 
     return;
 }
@@ -1061,19 +1063,22 @@ std::vector<int> Event::btag_jets(const std::string &wkpt) const{
 
 void Event::deepLearningPrediction(){
     /* Deep learning for large-R jets -- CWoLa */
+    cma::DEBUG("EVENT : Calculate DNN ");
+    m_cheetahTool->inference(m_ljets);     // decorate the ljet with DNN values
+
     return;
 }
 
 
 /*** RETURN WEIGHTS ***/
-float Event::weight_mc(){
-    return 1.0; //**m_weight_mc;
-}
-float Event::weight_pileup(){
-    return 1.0; //**m_weight_pileup;
-}
+float Event::weight_mc(){     return 1.0;} //**m_weight_mc;
+float Event::weight_pileup(){ return 1.0;} //**m_weight_pileup;
+
+/* Default b-tag weight */
+float Event::weight_btag(){ return m_weight_btag_default;}
 
 float Event::weight_btag(const std::string &wkpt){
+    /* btag weight for specific working point */
     std::string tmp_wkpt(wkpt);
     if(m_weight_btag.find(wkpt) == m_weight_btag.end()){
         cma::WARNING("EVENT : B-tagging working point "+wkpt+" does not exist");
@@ -1083,10 +1088,6 @@ float Event::weight_btag(const std::string &wkpt){
     return m_weight_btag[tmp_wkpt];
 }
 
-float Event::weight_btag(){
-    /* Default b-tag weight */
-    return m_weight_btag_default;
-}
 
 // Get weight systematics
 std::map<std::string,float> Event::weightSystematicsFloats(){
@@ -1103,12 +1104,6 @@ std::map<std::string,std::vector<float> > Event::weightSystematicsVectorFloats()
     std::map<std::string,std::vector<float> > tmp_weightSystematicsVectorFloats;
     return tmp_weightSystematicsVectorFloats;
 }
-
-std::vector<std::string> Event::listOfWeightSystematics(){
-    /* list of weight systematics */
-    return m_listOfWeightSystematics;
-}
-
 
 
 /*** DELETE VARIABLES ***/

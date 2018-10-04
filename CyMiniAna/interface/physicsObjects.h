@@ -284,8 +284,18 @@ struct TtbarDilepton : DileptonReco {
 
 
 // ------------------------ // 
+// struct for holding information on a 'cut' in eventSelection
+//  ideally this could be extended so that cuts are parsed from a text file
+//  & coded automatically, without humans!
+struct Cut{
+    std::string name;       // name of cut
+    std::string comparison; // sign of cut (<,<=,>,>=,==,!=)
+    float value;            // float value -- cast to int if needed
+};
+
+
+// Struct to contain sample information (processing the input file)
 struct Sample {
-    // Struct to contain sample information (processing the input file)
     std::string inputFile;         // input file name
     std::string sampleType;        // kind of sample, e.g., 'ttbar', 'qcd', 'signal', etc.
     std::string primaryDataset;    // primary dataset (how to identify the sample & metadata)

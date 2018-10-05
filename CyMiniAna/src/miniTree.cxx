@@ -62,8 +62,12 @@ void miniTree::createBranches(){
     if (m_config->isOneLeptonAnalysis()) {
         // index of AK4 jet in leptonic top candidate
         if (!branch_exists("leptop_jet"))  m_ttree->Branch( "leptop_jet",  &m_leptop_jet,  "leptop_jet/I" );
+
         // index of AK8 jet as hadronic top candidate
         if (!branch_exists("hadtop_ljet")) m_ttree->Branch( "hadtop_ljet", &m_hadtop_ljet, "hadtop_ljet/I" );
+
+        // Leopard LH value
+        if (!branch_exists("leptop_leopard")) m_ttree->Branch( "leptop_leopard", &m_leopard, "leptop_leopard/F" );
 
         // Reconstructed neutrino(s) -- store in a vector for consistency with dilepton analysis
         if (!branch_exists("nu_pt")) {
@@ -122,6 +126,7 @@ void miniTree::saveEvent(Event& event, const std::vector<unsigned int>& evtsel_d
         Ttbar1L ttbar = event.ttbar1L();
         m_leptop_jet  = ttbar.jet.index;
         m_hadtop_ljet = ttbar.ljet.index;
+        m_leopard     = ttbar.leopard;
 
         m_nu_pt.clear();
         m_nu_eta.clear();

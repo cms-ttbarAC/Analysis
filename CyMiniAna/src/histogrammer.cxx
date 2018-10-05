@@ -258,7 +258,7 @@ void histogrammer::bookHists( std::string name ){
                 init_hist("deltay_Qpos_"+cname, 1000,-5.0,5.0);
                 init_hist("deltay_Qneg_"+cname,  1000,-5.0,5.0);
                 init_hist("mttbar_"+cname,  5000, 0.0, 5000);
-                init_hist("leptop_leopard_"+cname, 100, 0.0, 1.0); // likelihood for leptonic top reconstruction
+                init_hist("leptop_leopard_"+cname, 100,0.0,10.0);  // likelihood for leptonic top reconstruction
             } // end loop over containments
         } // end is ttbar
         else{

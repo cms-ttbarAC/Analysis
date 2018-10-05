@@ -46,8 +46,6 @@ configuration::configuration(const std::string &configFile) :
   m_DNNtraining(false),
   m_dnnFile("SetMe"),
   m_dnnKey("SetMe"),
-  m_doRecoEventLoop(false),
-  m_matchTruthToReco(true),
   m_kinematicReco(true),
   m_jet_btag_wkpt("SetMe"),
   m_recalculateMetadata(false),
@@ -168,8 +166,6 @@ void configuration::initialize() {
     m_useDNN           = cma::str2bool( getConfigOption("useDNN") );
     m_DNNinference     = cma::str2bool( getConfigOption("DNNinference") );
     m_DNNtraining      = cma::str2bool( getConfigOption("DNNtraining") );
-    m_doRecoEventLoop  = cma::str2bool( getConfigOption("doRecoEventLoop") );
-    m_matchTruthToReco = true;  // not needed in this analysis (so it's not a config option) but here in case we do later
     m_kinematicReco    = cma::str2bool( getConfigOption("kinematicReco") );
     m_metadataFile     = getConfigOption("metadataFile");
     m_calcWeightSystematics             = cma::str2bool( getConfigOption("calcWeightSystematics") );
@@ -455,11 +451,6 @@ std::string configuration::convert(const Era& era) {
         cma::ERROR("CONFIGURATION : ERA convert conversion is not implemented: "+std::to_string(era));
         exit(97);
     }
-}
-
-void configuration::setMatchTruthToReco(bool truthToReco){
-    m_matchTruthToReco = truthToReco;
-    return;
 }
 
 // THE END

@@ -91,7 +91,7 @@ void histogrammer::init_hists_jets(const std::string& name, const std::string& p
     /* Histograms for AK4 distributions */
     init_hists_4vec(name,prefix);
 
-    init_hist(prefix+"_bdisc_"+name, 100,  0.0,    1.0);
+    init_hist(prefix+"_bdisc_"+name,   100, 0.0, 1.0);
 
     return;
 }
@@ -134,7 +134,7 @@ void histogrammer::init_hists_ttbarAC(const std::string& name){
     init_hist("pTttbar_"+name,  300, 0.0,  600);
     init_hist("yttbar_"+name,   100,  0.,   10);
     init_hist("betattbar_"+name,100,  0.,    1);
-    init_hist("deltaR_ttbar_"+name, 50, 0.0, 5.0);   // deltaR between leptonic top and hadronic top
+    init_hist("deltaR_ttbar_"+name, 50, 0.0, 5.0);     // deltaR between leptonic top and hadronic top
 
     init_hist("mttbar_deltay_"+name,  5000, 0.0, 5000, 1000,-5.0,  5.0);  // m_ttbar = x-axis; deltay = y-axis
     init_hist("pTttbar_deltay_"+name,  300, 0.0,  600, 1000,-5.0,  5.0);
@@ -258,6 +258,7 @@ void histogrammer::bookHists( std::string name ){
                 init_hist("deltay_Qpos_"+cname, 1000,-5.0,5.0);
                 init_hist("deltay_Qneg_"+cname,  1000,-5.0,5.0);
                 init_hist("mttbar_"+cname,  5000, 0.0, 5000);
+                init_hist("leptop_leopard_"+cname, 100, 0.0, 1.0); // likelihood for leptonic top reconstruction
             } // end loop over containments
         } // end is ttbar
         else{
@@ -536,6 +537,7 @@ void histogrammer::fill( const std::string& name, Event& event, double event_wei
             histogrammerBase::fill("deltay_"+lepQ+"_"+cname, dy, event_weight);
             histogrammerBase::fill("hadtop_deltaPhi_MET_"+cname, dphi_ljet_MET, event_weight);
             histogrammerBase::fill("mttbar_"+cname,  mtt,  event_weight);
+            histogrammerBase::fill("leptop_leopard_"+cname, ttbarSL.leopard, event_weight);
 
             float true_dy(0);
             std::vector<TruthTop> truth_tops = event.truth();

@@ -100,7 +100,14 @@ void eventSelection::identifySelection(){
     m_isTwoLeptonAnalysis  = m_selection.compare("dilepton")==0;
 
     // cross checks with AFB
-    m_isAFBAnalysis   = m_selection.compare("afb")==0;
+    m_isAFBAnalysis = m_selection.compare("afb")==0;
+
+    // check that at least one of the selections was chosen!
+    if (!m_dummySelection && !m_isZeroLeptonAnalysis && !m_isOneLeptonAnalysis &&
+        !m_isTwoLeptonAnalysis && !m_isAFBAnalysis){
+        cma::WARNING("EVENTSELECTION : Selection "+m_selection+" doesn't match any option -- setting to dummy selection");
+        m_dummySelection = true;
+    }
 
     return;
 }

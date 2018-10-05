@@ -43,6 +43,15 @@ class ttbarReco {
     std::map<std::string,int> m_mapContainment;
     std::map<std::string,int> m_targetMap;
 
+    // Leopard info
+    TFile* m_lh_file;
+    TH1D* m_mlb_bckg;
+    TH1D* m_mlb_sig;
+    TH1D* m_csv_bckg;
+    TH1D* m_csv_sig;
+    TAxis* m_xmlb;
+    TAxis* m_xcsv;
+
     float M_HALF_PI = M_PI*0.5;
 };
 

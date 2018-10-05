@@ -111,15 +111,16 @@ void getListOfBranches( TTree* tree, std::vector<std::string>& treeBranches ){
 void getListOfKeys( TFile* file, std::vector<std::string>& fileKeys ){
     /* Find the list of TTrees in a file */
     fileKeys.clear();
-
     TList* list = file->GetListOfKeys();
     TIter iter(list->MakeIterator());
     while(TObject* obj = iter()){
         TKey* key = (TKey*)obj;
         std::string keyname( key->GetName() );
         std::string classname( key->GetClassName() );
-        if (classname.find("TH1")!=std::string::npos || classname.find("TH2")!=std::string::npos){
-            fileKeys.push_back(keyname);  // just a histogram
+        if (classname.find("TH1")!=std::string::npos || 
+            classname.find("TH2")!=std::string::npos ||
+            classname.find("TEff")!=std::string::npos){
+            fileKeys.push_back(keyname);  // just a histogram/tefficiency
         }
         else{
             // Check if this is a directory that contains TTrees

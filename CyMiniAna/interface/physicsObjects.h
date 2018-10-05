@@ -192,6 +192,7 @@ struct Ttbar1L : CmaBase{
     Jet jet;
     TLorentzVector leptop;
 
+    float leopard;  // leopard likelihood (AK4+lepton)
     float dy;       // asymmetry : delta|y|
 };
 struct Ttbar2L : CmaBase{

@@ -18,4 +18,4 @@
 #root://131.225.204.161:1094//store/group/lpctop/ttbarAC/flatNtuples/ttbarAC_skim-v0.5/koala/SingleMuonF/31May2018/mujets-ejets/ttbarAC_outtree_42.root
 #root://131.225.204.161:1094//store/group/lpctop/ttbarAC/flatNtuples/ttbarAC_skim-v0.5/koala/SingleMuonF/31May2018/mujets-ejets/ttbarAC_outtree_148.root
 #root://131.225.204.161:1094//store/group/lpctop/ttbarAC/flatNtuples/ttbarAC_skim-v0.5/koala/ttbar/25Jun2018/cwolamujets-cwolaejets/ttbarAC_outtree_1.root
-data/cwola_fbu/ttbar.root
+/uscms_data/d3/demarley/ttbar/CMSSW_9_4_4-original//src/Analysis/CyMiniAna/data/cwola_fbu/ttbar.root

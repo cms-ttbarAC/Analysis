@@ -26,9 +26,21 @@ ttbarReco::ttbarReco( configuration& cmaConfig ) :
 
     if (m_config->isTwoLeptonAnalysis())
         m_dileptonTtbar = new dileptonTtbarReco(cmaConfig, configuration::run2_13tev_2016_25ns, 2, true);
+
+    // Leopard info for leptonic top tagging
+    m_lh_file = TFile::Open("config/leopard_lhs.root");
+    m_mlb_bckg = (TH1D*)m_lh_file->Get("mlb_b");
+    m_mlb_sig  = (TH1D*)m_lh_file->Get("mlb_s");
+    m_csv_bckg = (TH1D*)m_lh_file->Get("ak4_b");
+    m_csv_sig  = (TH1D*)m_lh_file->Get("ak4_s");
+
+    m_xmlb = m_mlb_bckg->GetXaxis();  // same structure for signal/background; just use background
+    m_xcsv = m_csv_bckg->GetXaxis();
   }
 
-ttbarReco::~ttbarReco() {}
+ttbarReco::~ttbarReco() {
+    m_lh_file->Close();
+}
 
 
 
@@ -95,6 +107,11 @@ void ttbarReco::execute(std::vector<Lepton>& leptons, std::vector<Neutrino>& nu,
 
     // Setup lepton (only 1 in the single lepton analysis)
     cma::DEBUG("TTBARRECO : building ttbar with "+std::to_string(leptons.size())+" leptons");
+    Jet dummy_jet;
+    Ljet dummy_ljet;
+    dummy_jet.isGood  = false;
+    dummy_ljet.isGood = false;
+
     Lepton lep;
     if (leptons.size()>0)
         lep = leptons.at(0);
@@ -106,29 +123,39 @@ void ttbarReco::execute(std::vector<Lepton>& leptons, std::vector<Neutrino>& nu,
     // Get Jets (only if lepton exists)
     int ak4candidate(-1);   // index in jets that corresponds to AK4 from leptonic top
     int ak8candidate(-1);   // index in ljets that corresponds to AK8 (hadronic top)
+    float leopard_lh(0);    // Likelihood value for leptonic top reconstruction
 
     if (leptons.size()>0){
         // -- Setup AK4 jet : 2D Cut
         cma::DEBUG("TTBARRECO : building ttbar with "+std::to_string(jets.size())+" ak4 candidates");
-        float ak4_pt(0);
 
         for (auto& jet : jets){
-            float jpt   = jet.p4.Pt();
             float dr    = jet.p4.DeltaR(lep.p4);              // DeltaR( lepton,AK4 )
             float ptrel = cma::ptrel( lep.p4,jet.p4 );        // pTrel(  lepton,AK4 )
 
             // Two possible scenarios -- only consider jets with DeltaR<PI/2:
             // > jet within (0.4<DeltaR<PI/2)
             // > jet closer than 0.4 but ptrel>25
-            // Choose highest pT option
+            // ~~Choose highest pT option~~ [old approach]
+            // Choose highest leopard LH option
+            // - Mass of AK4+lepton system (x) AK4 CSVv2
+            float mlb = (jet.p4 + lep.p4).M();
+            float csv = jet.bdisc;
+
+            int bin_mlb = m_xmlb->FindBin(mlb);
+            int bin_csv = m_xcsv->FindBin(csv);
+
+            float lh_bckg = m_mlb_bckg->GetBinContent(bin_mlb) * m_csv_bckg->GetBinContent(bin_csv);
+            float lh_sig  = m_mlb_sig->GetBinContent(bin_mlb)  * m_csv_sig->GetBinContent(bin_csv);
+            float lhr     = (lh_bckg>0) ? lh_sig / lh_bckg : 0.0;
 
             if (dr<M_HALF_PI) { 
-                if (dr<0.4 && ptrel>25 && jpt>ak4_pt){
-                    ak4_pt = jpt;
+                if (dr<0.4 && ptrel>25 && lhr>leopard_lh){
+                    leopard_lh   = lhr;
                     ak4candidate = jet.index;
                 }
-                else if (dr>0.4 && jpt>ak4_pt){
-                    ak4_pt = jpt;
+                else if (dr>0.4 && lhr>leopard_lh){
+                    leopard_lh   = lhr;
                     ak4candidate = jet.index;
                 }
             } // end possible AK4 candidate
@@ -152,19 +179,15 @@ void ttbarReco::execute(std::vector<Lepton>& leptons, std::vector<Neutrino>& nu,
     // Define objects in the struct
     m_ttbar1L.neutrino = nu.at(0);
     m_ttbar1L.lepton   = lep;
-
-    Jet dummy_jet;
-    dummy_jet.isGood = false;
-    m_ttbar1L.jet = (ak4candidate>=0) ? jets.at(ak4candidate) : dummy_jet;
+    m_ttbar1L.jet      = (ak4candidate>=0) ? jets.at(ak4candidate) : dummy_jet;
+    m_ttbar1L.leopard  = leopard_lh;
+    m_ttbar1L.ljet     = (ak8candidate>=0) ? ljets.at(ak8candidate) : dummy_ljet;
 
     TLorentzVector leptop;
     leptop = nu.at(0).p4 + lep.p4 + m_ttbar1L.jet.p4;
     m_ttbar1L.leptop = leptop;
 
-    Ljet dummy_ljet;
-    dummy_ljet.isGood = false;
-    m_ttbar1L.ljet = (ak8candidate>=0) ? ljets.at(ak8candidate) : dummy_ljet;
-
+    // calculate reconstructed asymmetry value
     m_ttbar1L.dy = lep.charge * ( std::abs(leptop.Rapidity()) - std::abs(m_ttbar1L.ljet.p4.Rapidity()) );
 
     cma::DEBUG("TTBARRECO : Ttbar built ");

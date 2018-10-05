@@ -123,11 +123,6 @@ class configuration {
     double maxDNN() {return m_maxDNN;}
     std::string dnnKey() {return m_dnnKey;}   // key for lwtnn
 
-    // Reco/Truth event loops
-    bool doRecoEventLoop() {return m_doRecoEventLoop;}
-    bool matchTruthToReco() {return m_matchTruthToReco;}
-    void setMatchTruthToReco(bool truthToReco);
-
     // truth-reco matching
     std::map<std::string,int> mapOfPartonContainment() {return m_containmentMap;}
     std::map<int,std::string> mapOfPartonContainmentRev() {return m_containmentMapRev;}
@@ -209,8 +204,6 @@ class configuration {
     bool m_DNNtraining;
     std::string m_dnnFile;
     std::string m_dnnKey;
-    bool m_doRecoEventLoop;
-    bool m_matchTruthToReco;
     bool m_kinematicReco;
 
     std::string m_jet_btag_wkpt;   // "L","M","T"
